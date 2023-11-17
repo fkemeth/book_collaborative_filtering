@@ -43,8 +43,9 @@ class CollaborativeFilter:
         correlation_method: str = "pearson",
         user_col: str = "user_id",
         item_col: str = "book_id",
-        remove_self_similarity: bool=True,
-        remove_nan_similarities: bool=True
+        remove_self_similarity: bool = True,
+        remove_nan_similarities: bool = True,
+        remove_constant_ratings: bool = True,
     ) -> pd.Series:
         assert (
             len(input_ratings[user_col].unique()) == 1
@@ -60,6 +61,20 @@ class CollaborativeFilter:
         relevant_ratings = pd.merge(
             ratings, input_ratings[item_col], on=[item_col], how="inner"
         )
+
+        # Remove users with constant ratings
+        if remove_constant_ratings:
+            ratings_variance = (
+                relevant_ratings[[user_col, "rating"]]
+                .groupby(user_col)
+                .agg(variance=("rating", "var"))
+                .reset_index()
+            )
+            ratings_variance = ratings_variance[ratings_variance.variance > 0]
+            relevant_ratings = pd.merge(
+                relevant_ratings, ratings_variance[user_col], on=[user_col], how="inner"
+            )
+
         uii_matrix = relevant_ratings.pivot_table(
             index=[user_col], columns=[item_col], values="rating"
         )
@@ -95,7 +110,7 @@ class CollaborativeFilter:
         assert neighborhood_method in [
             "threshold",
             "number",
-            None
+            None,
         ], "Only 'threshold', 'number' or None neighborhood methods supported"
 
         if neighborhood_method == "threshold":
@@ -115,7 +130,7 @@ class CollaborativeFilter:
             self.user_col,
             self.item_col,
             remove_self_similarity=True,
-            remove_nan_similarities=True
+            remove_nan_similarities=True,
         )
 
         # Select neighborhood

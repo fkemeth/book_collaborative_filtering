@@ -29,7 +29,8 @@ class TestCollaborativeFilterRawSimilarities:
             user_col="user_id",
             item_col="item_id",
             remove_self_similarity=False,
-            remove_nan_similarities=False
+            remove_nan_similarities=False,
+            remove_constant_ratings=False
         )
         assert len(similarities) == 5
         assert similarities[1] == pytest.approx(1., rel=1e-6)

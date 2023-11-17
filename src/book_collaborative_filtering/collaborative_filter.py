@@ -102,6 +102,8 @@ class CollaborativeFilter:
             return similarities[similarities > minimal_similarity]
         elif neighborhood_method == "number":
             return similarities.nlargest(n=number_of_neighbors)
+        elif neighborhood_method is None:
+            return similarities
 
     def get_similarities(self, input_ratings: pd.DataFrame) -> pd.DataFrame:
         # Calculate similarities between input ratings and ratings data

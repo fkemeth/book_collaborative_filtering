@@ -5,11 +5,10 @@ import pandas as pd
 
 from scipy.stats import spearmanr
 
-from pandas.core import nanops
 from book_collaborative_filtering.collaborative_filter import CollaborativeFilter
 
 
-class TestCollaborativeFilterSimilarities:
+class TestCollaborativeFilterRawSimilarities:
     ratings = pd.DataFrame(
         data={
             "user_id": [1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4],
@@ -77,6 +76,42 @@ class TestCollaborativeFilterSimilarities:
         p_coeff = spearmanr(x, y).correlation
         assert similarities[2] == pytest.approx(p_coeff, rel=1e-6)
         assert similarities[3] == pytest.approx(-1., rel=1e-6)
-        return similarities, p_coeff
-
+    
+    def test_calculate_raw_similarities_min_rated(self):
+        similarities = CollaborativeFilter.calculate_raw_similarities(
+            self.ratings,
+            self.input_ratings,
+            minimum_number_of_books_rated_in_common=1,
+            correlation_method="spearman",
+            user_col="user_id",
+            item_col="item_id",
+        )
+        assert len(similarities) == 3
+        similarities = CollaborativeFilter.calculate_raw_similarities(
+            self.ratings,
+            self.input_ratings,
+            minimum_number_of_books_rated_in_common=2,
+            correlation_method="spearman",
+            user_col="user_id",
+            item_col="item_id",
+        )
+        assert len(similarities) == 3
+        similarities = CollaborativeFilter.calculate_raw_similarities(
+            self.ratings,
+            self.input_ratings,
+            minimum_number_of_books_rated_in_common=3,
+            correlation_method="spearman",
+            user_col="user_id",
+            item_col="item_id",
+        )
+        assert len(similarities) == 2
+        similarities = CollaborativeFilter.calculate_raw_similarities(
+            self.ratings,
+            self.input_ratings,
+            minimum_number_of_books_rated_in_common=4,
+            correlation_method="spearman",
+            user_col="user_id",
+            item_col="item_id",
+        )
+        assert len(similarities) == 0
 

@@ -131,6 +131,7 @@ class CollaborativeFilter:
             self.item_col,
             remove_self_similarity=True,
             remove_nan_similarities=True,
+            remove_constant_ratings=True
         )
 
         # Select neighborhood
@@ -144,8 +145,7 @@ class CollaborativeFilter:
 
     @staticmethod
     def calculate_score(
-        self,
-        column,
+        column: pd.Series,
         similarities: pd.Series,
         input_mean: float = 0.0,
         user_means: pd.Series = None,

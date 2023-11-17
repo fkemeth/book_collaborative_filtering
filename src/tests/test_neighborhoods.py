@@ -1,10 +1,4 @@
-import pytest
-
-import numpy as np
 import pandas as pd
-
-from scipy.stats import spearmanr
-
 from book_collaborative_filtering.collaborative_filter import CollaborativeFilter
 
 class TestCollaborativeFilterNeighborhoods:

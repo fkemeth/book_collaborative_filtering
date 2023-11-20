@@ -2,6 +2,9 @@ import numpy as np
 import pandas as pd
 from pandas.core import nanops
 
+import warnings
+warnings.simplefilter("ignore", category=RuntimeWarning) 
+
 
 class CollaborativeFilter:
     def __init__(

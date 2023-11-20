@@ -20,6 +20,7 @@ class TestCollaborativeFilterRawSimilarities:
         data={"user_id": [99, 99, 99], "item_id": ["a", "b", "c"], "rating": [1, 2, 2]}
     )
 
+    @pytest.mark.filterwarnings("ignore:invalid value encountered in divide")
     def test_calculate_raw_similarities_wo_filters(self):
         similarities = CollaborativeFilter.calculate_raw_similarities(
             self.ratings,

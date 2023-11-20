@@ -11,7 +11,7 @@ from book_collaborative_filtering.collaborative_filter import CollaborativeFilte
 class TestCollaborativeFilterCalculateScore:
     column = pd.Series([1, np.nan, 5, 5, 1])
 
-    def test_calculate_score(self):
+    def test_calculate_score(self) -> None:
         score = CollaborativeFilter.calculate_score(
             self.column,
             pd.Series([0, 1, 1, 1, 0]),
@@ -84,4 +84,52 @@ class TestCollaborativeFilterCalculateScore:
         )
         assert score == pytest.approx(np.nansum(self.column*similarities)/np.sum(similarities), rel=1e-6)
 
+    def test_calculate_score_mean_centered(self) -> None:
+        # Check with user means all 3 -> score=5
+        column = pd.Series([1, np.nan, 5, 5, 1])
+        score = CollaborativeFilter.calculate_score(
+            self.column,
+            pd.Series([0, 1, 1, 1, 0], name="similarities"),
+            input_mean=3.0,
+            user_means=pd.Series([3, 3, 3, 3, 3], name="rating"),
+            minimal_number_of_ratings=1,
+            deviation_from_mean=True,
+        )
+        assert score == pytest.approx(5, rel=1e-6)
+
+        # Check if input mean is smaller -> score=4 for input_mean=2
+        column = pd.Series([1, np.nan, 5, 5, 1])
+        score = CollaborativeFilter.calculate_score(
+            self.column,
+            pd.Series([0, 1, 1, 1, 0], name="similarities"),
+            input_mean=2.0,
+            user_means=pd.Series([3, 3, 3, 3, 3], name="rating"),
+            minimal_number_of_ratings=1,
+            deviation_from_mean=True,
+        )
+        assert score == pytest.approx(4, rel=1e-6)
+
+        # Check if user means are different -> score=3
+        column = pd.Series([1, np.nan, 5, 5, 1])
+        score = CollaborativeFilter.calculate_score(
+            self.column,
+            pd.Series([0, 1, 1, 1, 0], name="similarities"),
+            input_mean=3.0,
+            user_means=pd.Series([3, 3, 5, 5, 3], name="rating"),
+            minimal_number_of_ratings=1,
+            deviation_from_mean=True,
+        )
+        assert score == pytest.approx(3, rel=1e-6)
+
+        # Check if user means are different -> score=2
+        column = pd.Series([1, np.nan, 5, 5, 1])
+        score = CollaborativeFilter.calculate_score(
+            self.column,
+            pd.Series([1, 1, 1, 1, 1], name="similarities"),
+            input_mean=3.0,
+            user_means=pd.Series([3, 3, 5, 5, 3], name="rating"),
+            minimal_number_of_ratings=1,
+            deviation_from_mean=True,
+        )
+        assert score == pytest.approx(2, rel=1e-6)
 

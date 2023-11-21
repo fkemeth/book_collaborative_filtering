@@ -49,6 +49,7 @@ class CollaborativeFilter:
         remove_self_similarity: bool = True,
         remove_nan_similarities: bool = True,
         remove_constant_ratings: bool = True,
+        remove_negative_weights: bool = True,
     ) -> pd.Series:
         assert (
             len(input_ratings[user_col].unique()) == 1
@@ -97,6 +98,11 @@ class CollaborativeFilter:
         # Remove self similarity
         if remove_self_similarity:
             similarities[user_id] = np.nan
+
+        # Remove negative weights
+        if remove_negative_weights:
+            similarities[similarities<0] = np.nan
+            
         # Remove nans
         if remove_nan_similarities:
             similarities = similarities.dropna()
@@ -134,7 +140,8 @@ class CollaborativeFilter:
             self.item_col,
             remove_self_similarity=True,
             remove_nan_similarities=True,
-            remove_constant_ratings=True
+            remove_constant_ratings=True,
+            remove_negative_weights=True,
         )
 
         # Select neighborhood

@@ -31,7 +31,8 @@ class TestCollaborativeFilterRawSimilarities:
             item_col="item_id",
             remove_self_similarity=False,
             remove_nan_similarities=False,
-            remove_constant_ratings=False
+            remove_constant_ratings=False,
+            remove_negative_weights=False,
         )
         assert len(similarities) == 5
         assert similarities[1] == pytest.approx(1., rel=1e-6)
@@ -52,7 +53,9 @@ class TestCollaborativeFilterRawSimilarities:
             user_col="user_id",
             item_col="item_id",
             remove_self_similarity=True,
-            remove_nan_similarities=True
+            remove_nan_similarities=True,
+            remove_constant_ratings=True,
+            remove_negative_weights=False
         )
         assert len(similarities) == 3
         assert similarities[1] == pytest.approx(1., rel=1e-6)
@@ -70,6 +73,10 @@ class TestCollaborativeFilterRawSimilarities:
             correlation_method="spearman",
             user_col="user_id",
             item_col="item_id",
+            remove_self_similarity=True,
+            remove_nan_similarities=True,
+            remove_constant_ratings=True,
+            remove_negative_weights=False
         )
         assert len(similarities) == 3
         assert similarities[1] == pytest.approx(1., rel=1e-6)
@@ -87,6 +94,7 @@ class TestCollaborativeFilterRawSimilarities:
             correlation_method="spearman",
             user_col="user_id",
             item_col="item_id",
+            remove_negative_weights=False
         )
         assert len(similarities) == 3
         similarities = CollaborativeFilter.calculate_raw_similarities(
@@ -96,6 +104,7 @@ class TestCollaborativeFilterRawSimilarities:
             correlation_method="spearman",
             user_col="user_id",
             item_col="item_id",
+            remove_negative_weights=False
         )
         assert len(similarities) == 3
         similarities = CollaborativeFilter.calculate_raw_similarities(
@@ -105,6 +114,7 @@ class TestCollaborativeFilterRawSimilarities:
             correlation_method="spearman",
             user_col="user_id",
             item_col="item_id",
+            remove_negative_weights=False
         )
         assert len(similarities) == 2
         similarities = CollaborativeFilter.calculate_raw_similarities(
@@ -114,6 +124,7 @@ class TestCollaborativeFilterRawSimilarities:
             correlation_method="spearman",
             user_col="user_id",
             item_col="item_id",
+            remove_negative_weights=False
         )
         assert len(similarities) == 0
 

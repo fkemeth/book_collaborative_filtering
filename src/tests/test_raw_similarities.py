@@ -25,7 +25,7 @@ class TestCollaborativeFilterRawSimilarities:
         similarities = CollaborativeFilter.calculate_raw_similarities(
             self.ratings,
             self.input_ratings,
-            minimum_number_of_books_rated_in_common=2,
+            minimum_number_of_items_rated_in_common=2,
             correlation_method="pearson",
             user_col="user_id",
             item_col="item_id",
@@ -48,7 +48,7 @@ class TestCollaborativeFilterRawSimilarities:
         similarities = CollaborativeFilter.calculate_raw_similarities(
             self.ratings,
             self.input_ratings,
-            minimum_number_of_books_rated_in_common=2,
+            minimum_number_of_items_rated_in_common=2,
             correlation_method="pearson",
             user_col="user_id",
             item_col="item_id",
@@ -69,7 +69,7 @@ class TestCollaborativeFilterRawSimilarities:
         similarities = CollaborativeFilter.calculate_raw_similarities(
             self.ratings,
             self.input_ratings,
-            minimum_number_of_books_rated_in_common=2,
+            minimum_number_of_items_rated_in_common=2,
             correlation_method="spearman",
             user_col="user_id",
             item_col="item_id",
@@ -90,7 +90,7 @@ class TestCollaborativeFilterRawSimilarities:
         similarities = CollaborativeFilter.calculate_raw_similarities(
             self.ratings,
             self.input_ratings,
-            minimum_number_of_books_rated_in_common=1,
+            minimum_number_of_items_rated_in_common=1,
             correlation_method="spearman",
             user_col="user_id",
             item_col="item_id",
@@ -100,7 +100,7 @@ class TestCollaborativeFilterRawSimilarities:
         similarities = CollaborativeFilter.calculate_raw_similarities(
             self.ratings,
             self.input_ratings,
-            minimum_number_of_books_rated_in_common=2,
+            minimum_number_of_items_rated_in_common=2,
             correlation_method="spearman",
             user_col="user_id",
             item_col="item_id",
@@ -110,7 +110,7 @@ class TestCollaborativeFilterRawSimilarities:
         similarities = CollaborativeFilter.calculate_raw_similarities(
             self.ratings,
             self.input_ratings,
-            minimum_number_of_books_rated_in_common=3,
+            minimum_number_of_items_rated_in_common=3,
             correlation_method="spearman",
             user_col="user_id",
             item_col="item_id",
@@ -120,7 +120,7 @@ class TestCollaborativeFilterRawSimilarities:
         similarities = CollaborativeFilter.calculate_raw_similarities(
             self.ratings,
             self.input_ratings,
-            minimum_number_of_books_rated_in_common=4,
+            minimum_number_of_items_rated_in_common=4,
             correlation_method="spearman",
             user_col="user_id",
             item_col="item_id",

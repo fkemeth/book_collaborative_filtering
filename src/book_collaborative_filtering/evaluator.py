@@ -31,7 +31,6 @@ class Evaluator:
             self.user_ids[train_index],
             self.user_ids[test_index],
         )
-        test_user_id = test_user_ids[0]
         train_ratings, test_ratings = (
             self.ratings[self.ratings.user_id.isin(train_user_ids)],
             self.ratings[self.ratings.user_id.isin(test_user_ids)],
@@ -44,13 +43,13 @@ class Evaluator:
         cf = CollaborativeFilter(
             train_ratings,
             user_col="user_id",
-            item_col="book_id",
+            item_col="item_id",
             neighborhood_method=self.params["neighborhood_method"],
             correlation_method=self.params["correlation_method"],
             minimal_similarity=self.params["minimal_similarity"],
             number_of_neighbors=self.params["number_of_neighbors"],
-            minimum_number_of_books_rated_in_common=self.params[
-                "minimum_number_of_books_rated_in_common"
+            minimum_number_of_items_rated_in_common=self.params[
+                "minimum_number_of_items_rated_in_common"
             ],
             minimal_number_of_ratings=self.params["minimal_number_of_ratings"],
             deviation_from_mean=self.params["deviation_from_mean"],
@@ -60,7 +59,7 @@ class Evaluator:
         predicted_scores = cf.get_scores(similarities, input_ratings)
 
         predictions = heldout_ratings.merge(
-            predicted_scores.rename("scores"), on="book_id", how="left"
+            predicted_scores.rename("scores"), on="item_id", how="left"
         )
         coverage = 1 - predictions.scores.isna().sum() / len(predictions)
         mae = (predictions.rating - predictions.scores).abs().mean()

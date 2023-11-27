@@ -11,12 +11,12 @@ class CollaborativeFilter:
         self,
         ratings: pd.DataFrame,
         user_col: str = "user_id",
-        item_col: str = "book_id",
+        item_col: str = "item_id",
         neighborhood_method: str = "threshold",
         correlation_method: str = "pearson",
         minimal_similarity: float = 0.7,
         number_of_neighbors: int = 50,
-        minimum_number_of_books_rated_in_common: int = 10,
+        minimum_number_of_items_rated_in_common: int = 10,
         minimal_number_of_ratings: int = 5,
         deviation_from_mean: bool = True,
     ) -> None:
@@ -32,8 +32,8 @@ class CollaborativeFilter:
         self.correlation_method = correlation_method
         self.minimal_similarity = minimal_similarity
         self.number_of_neighbors = number_of_neighbors
-        self.minimum_number_of_books_rated_in_common = (
-            minimum_number_of_books_rated_in_common
+        self.minimum_number_of_items_rated_in_common = (
+            minimum_number_of_items_rated_in_common
         )
         self.minimal_number_of_ratings = minimal_number_of_ratings
         self.deviation_from_mean = deviation_from_mean
@@ -42,10 +42,10 @@ class CollaborativeFilter:
     def calculate_raw_similarities(
         ratings_data: pd.DataFrame,
         input_ratings: pd.DataFrame,
-        minimum_number_of_books_rated_in_common: int,
+        minimum_number_of_items_rated_in_common: int,
         correlation_method: str = "pearson",
         user_col: str = "user_id",
-        item_col: str = "book_id",
+        item_col: str = "item_id",
         remove_self_similarity: bool = True,
         remove_nan_similarities: bool = True,
         remove_constant_ratings: bool = True,
@@ -89,7 +89,7 @@ class CollaborativeFilter:
             method=lambda x, y: nanops.nancorr(
                 x,
                 y,
-                min_periods=minimum_number_of_books_rated_in_common,
+                min_periods=minimum_number_of_items_rated_in_common,
                 method=correlation_method,
             ),
         )
@@ -134,7 +134,7 @@ class CollaborativeFilter:
         similarities = CollaborativeFilter.calculate_raw_similarities(
             self.ratings,
             input_ratings,
-            self.minimum_number_of_books_rated_in_common,
+            self.minimum_number_of_items_rated_in_common,
             self.correlation_method,
             self.user_col,
             self.item_col,
@@ -164,7 +164,7 @@ class CollaborativeFilter:
     ) -> float:
         similarities = similarities[column.notna()]
         column = column[column.notna()]
-        # If book has been rated less than minimal_number_of_ratings, set its score to nan
+        # If item has been rated less than minimal_number_of_ratings, set its score to nan
         if len(column) < minimal_number_of_ratings:
             return np.nan
 

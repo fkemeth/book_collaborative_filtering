@@ -37,7 +37,7 @@ class Evaluator:
         )
 
         input_ratings, heldout_ratings = train_test_split(
-            test_ratings, stratify=test_ratings.user_id, test_size=0.1, random_state=42
+            test_ratings, stratify=test_ratings.user_id, test_size=1, random_state=42
         )
 
         cf = CollaborativeFilter(

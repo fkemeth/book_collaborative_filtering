@@ -2,6 +2,8 @@ import pandas as pd
 
 import multiprocessing as mp
 
+from itertools import cycle
+
 from sklearn.model_selection import KFold, train_test_split
 
 from .collaborative_filter import CollaborativeFilter
@@ -36,9 +38,7 @@ class Evaluator:
             self.ratings[self.ratings.user_id.isin(test_user_ids)],
         )
 
-        input_ratings, heldout_ratings = train_test_split(
-            test_ratings, stratify=test_ratings.user_id, test_size=1, random_state=42
-        )
+        input_ratings, heldout_ratings = train_test_split(test_ratings, stratify=test_ratings.user_id, test_size=1)
 
         cf = CollaborativeFilter(
             train_ratings,
@@ -67,7 +67,7 @@ class Evaluator:
         return coverage, mae
 
     def run(self, number_of_runs: int = 1) -> None:
-        for i, (train_index, test_index) in enumerate(self.kf.split(self.user_ids)):
+        for i, (train_index, test_index) in enumerate(cycle(list(self.kf.split(self.user_ids)))):
             self.evaluate(train_index=train_index, test_index=test_index)
 
             if i == number_of_runs - 1:
@@ -75,15 +75,16 @@ class Evaluator:
 
     def run_parallel(self, number_of_runs: int = 1) -> None:
         metrics = {"coverage": [], "mae": []}
-        pool = mp.Pool(mp.cpu_count() - 1)
-        for train_index, test_index in list(self.kf.split(self.user_ids))[
-            :number_of_runs
-        ]:
+        pool = mp.Pool(int(mp.cpu_count()/2) - 1)
+        for i, (train_index, test_index) in enumerate(cycle(list(self.kf.split(self.user_ids)))):
             pool.apply_async(
                 self.evaluate,
                 args=(train_index, test_index),
                 callback=lambda x: Evaluator.log_results(metrics, *x),
             )
+
+            if i == number_of_runs - 1:
+                break
         pool.close()
         pool.join()
         self.metrics = metrics

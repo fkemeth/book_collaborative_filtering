@@ -75,7 +75,7 @@ class Evaluator:
 
     def run_parallel(self, number_of_runs: int = 1) -> None:
         metrics = {"coverage": [], "mae": []}
-        pool = mp.Pool(int(mp.cpu_count()/2) - 1)
+        pool = mp.Pool(mp.cpu_count() - 4)
         for i, (train_index, test_index) in enumerate(cycle(list(self.kf.split(self.user_ids)))):
             pool.apply_async(
                 self.evaluate,

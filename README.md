@@ -5,6 +5,8 @@ This branch provides code to evaluate different user-based recommender systems o
 + goodbooks-10k: Data taken from ![this repo](https://github.com/zygmuntz/goodbooks-10k)
 + Movielens-100k: Data taken from ![Kaggle](https://www.kaggle.com/datasets/prajitdatta/movielens-100k-dataset/)
 
+You may also pull the data from this repo using ![git lfs](https://git-lfs.com/).
+
 To evaluate design choices of the user-user recommender system on the goodbooks-10k dataset, run
 
 `evaluate_book_cf.ipynb`
